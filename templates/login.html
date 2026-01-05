@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login & Register</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+</head>
+<body>
+
+  <div class="notification-container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="notification {{ category }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  {% if session.get('unverified_email') %}
+  <form method="POST" action="{{ url_for('resend_verification') }}" class="resend-form" id="resendForm">
+    <input type="hidden" name="email" value="{{ session.get('unverified_email') }}">
+    <button type="submit" class="btn resend-btn" id="resendBtn">
+      <span class="spinner"></span>
+      Resend Verification Email
+    </button>
+  </form>
+  {% set _ = session.pop('unverified_email') %}
+{% endif %}
+
+</div>
+
+
+
+  <section class="m-form">
+    <div class="container">
+
+      <!-- Login Form -->
+      <div class="form-box login">
+        <form method="POST" action="{{ url_for('login') }}">
+          <h1>Login</h1>
+          <div class="input-box">
+            <input type="email" name="email" placeholder="Email" required />
+            <i class="bx bxs-envelope"></i>
+          </div>
+          <div class="input-box">
+            <input type="password" name="password" placeholder="Enter your password" required />
+            <i class="bx bxs-lock-alt"></i>
+          </div>
+          <div class="forget-link">
+            <a href="{{ url_for('forgot_password') }}" id="forgot-link">Forgot Password?</a>
+
+          </div>
+          <button type="submit" class="btn">Login</button>
+        </form>
+      </div>
+
+      <!-- Register Form -->
+      <div class="form-box register">
+        <form method="POST" action="{{ url_for('register') }}">
+          <h1>Register</h1>
+          <div class="input-box">
+            <input type="text" name="full_name" placeholder="Full Name" required />
+            <i class="bx bxs-user"></i>
+          </div>
+          <div class="input-box">
+            <input type="text" name="username" placeholder="Username" required />
+            <i class="bx bxs-user"></i>
+          </div>
+          <div class="input-box">
+            <input type="email" name="email" placeholder="Email" required />
+            <i class="bx bxs-envelope"></i>
+          </div>
+          <div class="input-box">
+            <input type="tel" name="phoneno" placeholder="Phone Number" required />
+            <i class="bx bxs-phone"></i>
+
+          </div>
+          <div class="input-box">
+            <input type="text" name="address" placeholder="Address" required />
+            <i class="bx bxs-home"></i>
+
+          </div>
+          <div class="input-box">
+            <input type="password" name="password" placeholder="Password" pattern="^(?=.*\d)(?=.*[!@#$%^&*]).{8,}$" title="Password must be at least 8 characters long, include at least one number and one special character (@!#$%^&*)" required>
+
+            <i class="bx bxs-lock-alt"></i>
+          </div>
+          <button type="submit" class="btn">Register</button>
+        </form>
+      </div>
+
+      <!-- Forgot Password Form -->
+      <div class="form-box forgot-password">
+        <form method="POST" action="{{ url_for('forgot_password') }}">
+          <h1>Forgot Password</h1>
+          <div class="input-box">
+            <input type="email" name="email" placeholder="Enter your registered email" required />
+            <i class="bx bxs-envelope"></i>
+          </div>
+          <button type="submit" class="btn">Send Reset Link</button>
+          <div style="margin-top: 10px; text-align:center;">
+            <button type="button" class="btn back-login-btn">Back to Login</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Toggle Buttons -->
+      <div class="toggle-box">
+        <div class="toggle-panel toggle-left">
+          <h1>Hello, Welcome!</h1>
+          <p>Don't have an account?</p>
+          <button class="btn register-btn">Register</button>
+        </div>
+        <div class="toggle-panel toggle-right">
+          <h1>Welcome Back!</h1>
+          <p>Already have an account?</p>
+          <button class="btn login-btn">Login</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <script src="{{ url_for('static', filename='script/script.js') }}"></script>
+  <script>
+   
+  // Automatically hide notification messages with smooth fade + slide
+document.addEventListener("DOMContentLoaded", () => {
+  const notifications = document.querySelectorAll(".notification");
+  notifications.forEach((note) => {
+    setTimeout(() => {
+      note.style.transition = "opacity 0.6s ease, transform 0.6s ease";
+      note.style.opacity = "0";
+      note.style.transform = "translateY(-20px)"; // slides upward
+      setTimeout(() => note.remove(), 600); // remove after fade+slide
+    }, 2400); // visible for 2.4s, then fade-slide for 0.6s → total 3.0s
+  });
+});
+
+// Resend verification button enhancement
+const resendForm = document.getElementById("resendForm");
+const resendBtn = document.getElementById("resendBtn");
+if (resendForm && resendBtn) {
+  resendForm.addEventListener("submit", () => {
+    const spinner = resendBtn.querySelector(".spinner");
+    resendBtn.disabled = true;
+    spinner.style.display = "inline-block";
+    resendBtn.innerHTML = `<span class="spinner"></span>Sending...`;
+
+    // Re-enable button after a few seconds (simulate sending)
+    setTimeout(() => {
+      resendBtn.disabled = false;
+      resendBtn.classList.add("success");
+      resendBtn.innerHTML = "Email Sent ✔";
+      setTimeout(() => {
+        resendBtn.classList.remove("success");
+        resendBtn.innerHTML = `<span class="spinner"></span>Resend Verification Email`;
+      }, 3000);
+    }, 2500);
+  });
+}
+
+
+
+      // Forgot Password toggle
+      const loginForm = document.querySelector(".form-box.login");
+      const registerForm = document.querySelector(".form-box.register");
+      const forgotForm = document.querySelector(".form-box.forgot-password");
+
+      const forgotLink = document.getElementById("forgot-link");
+      const backLoginBtn = document.querySelector(".back-login-btn");
+
+     // forgotLink.addEventListener("click", (e) => {
+        //e.preventDefault();
+      //  loginForm.style.display = "none";
+    //    registerForm.style.display = "none";
+  //      forgotForm.classList.add("active");
+//      });
+
+      backLoginBtn.addEventListener("click", () => {
+        forgotForm.classList.remove("active");
+        loginForm.style.display = "block";
+      });
+
+      // Toggle login/register buttons (existing)
+      const loginBtn = document.querySelector(".login-btn");
+      const registerBtn = document.querySelector(".register-btn");
+
+      loginBtn.addEventListener("click", () => {
+        loginForm.style.display = "block";
+        registerForm.style.display = "none";
+        forgotForm.classList.remove("active");
+      });
+
+      registerBtn.addEventListener("click", () => {
+        registerForm.style.display = "block";
+        loginForm.style.display = "none";
+        forgotForm.classList.remove("active");
+      });
+    
+  </script>
+</body>
+</html>

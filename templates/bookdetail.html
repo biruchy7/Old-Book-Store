@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{ book.book_name }} - Old Book Store</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" />
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <section id="header">
+    <div id="logo">
+      <a href="{{ url_for('home') }}">
+        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="OldBookStore.com" />
+      </a>
+    </div>
+    <div>
+      <ul id="navbar">
+        <li><a href="{{ url_for('home') }}">Home</a></li>
+        <li><a href="{{ url_for('buy') }}">Buy</a></li>
+        <li><a href="{{ url_for('sell') }}">Sell</a></li>
+
+        {% if session.get('user_id') %}
+        <li><a href="{{ url_for('orders') }}">Orders</a></li>
+        <li><a href="{{ url_for('wishlist') }}">Wishlist</a></li>
+        <li><a href="{{ url_for('messages') }}">Messages</a></li>
+
+        {% if session.get('role') == 'admin' %}
+        <li><a href="{{ url_for('admin') }}">Admin</a></li>
+        {% endif %}
+
+        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        {% else %}
+        <li><a href="{{ url_for('login') }}">Login/Register</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Book Detail Section -->
+  <section class="section-p1"
+    style="display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 40px; padding: 40px;">
+    <div style="flex: 1; max-width: 400px;">
+      {% set image_file = book.image_path %}
+      {% if image_file.startswith('static/') %}
+      {% set image_file = image_file[7:] %}
+      {% endif %}
+      <img src="{{ url_for('static', filename=image_file) }}" alt="{{ book.book_name }}"
+        style="width: 100%; border-radius: 8px;" />
+    </div>
+
+    <div style="flex: 2; max-width: 600px;">
+      <h2>{{ book.book_name }}</h2>
+      <p><strong>Author:</strong> {{ book.author }}</p>
+      {% if book.edition %}
+      <p><strong>Edition:</strong> {{ book.edition }}</p>
+      {% endif %}
+      <p><strong>Condition:</strong> {{ book.condition }}</p>
+      <p><strong>Category:</strong> {{ book.category_name }}</p>
+      <p><strong>Seller:</strong> {{ book.username }}</p>
+      <p><strong>Posted On:</strong> {{ book.posted_date.strftime('%Y-%m-%d') }}</p>
+      <p><strong>Description:</strong><br>{{ book.description }}</p>
+
+      <h3 style="margin-top: 20px;">
+        <span style="text-decoration: line-through; color: gray;">Rs {{ book.price }}</span>
+        &nbsp;&nbsp;
+        <span style="color: green; font-weight: bold;">Rs {{ book.selling_price }}</span>
+      </h3>
+
+      <!-- Message Seller Button (only if logged in user is NOT the seller) -->
+      {% if session.get('user_id') and session.get('user_id') != book.userID %}
+      <a href="{{ url_for('message_user_book', receiver_id=book.userID, book_id=book.bookID) }}"
+        style="display: inline-block; margin-bottom: 15px; padding: 10px 20px; background-color: #0275d8; color: white; border-radius: 4px; text-decoration: none; font-weight: 600;">
+        <i class="fas fa-comments"></i> Message Seller
+      </a>
+      {% endif %}
+
+      <!-- Add to Wishlist and Checkout buttons only if not the uploader -->
+      {% if session.get('user_id') and session.get('user_id') != book.userID %}
+      <form method="POST" action="{{ url_for('add_to_wishlist', book_id=book.bookID) }}" style="margin-bottom: 15px;">
+        <button type="submit"
+          style="padding: 10px 20px; font-size: 16px; background: #f3f3f3; cursor: pointer; border-radius: 4px;">
+          <i class="fas fa-heart"></i> Add to Wishlist
+        </button>
+      </form>
+
+      <a href="{{ url_for('checkout', book_id=book.bookID) }}"
+        style="display: inline-block; padding: 10px 20px; font-size: 16px; background-color: #4CAF50; color: white; border-radius: 4px; text-decoration: none;">
+        <i class="fas fa-credit-card"></i> Checkout & Pay
+      </a>
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="section-p1">
+    <div class="col">
+      <img class="logo" src="{{ url_for('static', filename='img/logo.png') }}" alt="OldBookStore Logo" />
+      <h4>Contact</h4>
+      <p><strong>Address:</strong> Dhangadhi, Kailali</p>
+      <p><strong>Phone:</strong> +977 9848562356 / +977 9848757575</p>
+      <p><strong>Hours:</strong> 10:00 - 18:00, Mon - Sat</p>
+    </div>
+  </footer>
+
+  <div class="Copyright" style="text-align:center; margin: 10px 0; font-size: 14px;">
+    &copy; www.OldBookStore.com All rights reserved.
+  </div>
+
+</body>
+
+</html>

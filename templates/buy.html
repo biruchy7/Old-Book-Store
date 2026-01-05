@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Old Book Store</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/buy.css') }}" />
+  <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+</head>
+
+<body>
+  <!-- Navigation -->
+  <section id="header">
+    <div id="logo">
+      <a href="{{ url_for('home') }}">
+        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="OldBookStore.com" />
+      </a>
+    </div>
+    <div>
+      <ul id="navbar">
+        <li><a href="{{ url_for('home') }}">Home</a></li>
+        <li><a class="active" href="{{ url_for('buy') }}">Buy</a></li>
+        <li><a href="{{ url_for('sell') }}">Sell</a></li>
+        <li><a href="{{ url_for('orders') }}">Orders</a></li>
+        <li><a href="{{ url_for('wishlist') }}">Wishlist</a></li>
+        <li><a href="{{ url_for('messages') }}">Messages</a></li>
+        {% if session.get('user_id') %}
+        <li>Welcome, {{ session.get('username') }}</li>
+        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        {% else %}
+        <li><a href="{{ url_for('login') }}">Login/Register</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Search Bar -->
+  <section id="categories">
+    <form method="GET" action="{{ url_for('buy') }}" class="search-container">
+      <input type="text" name="search" placeholder="Search books..." value="{{ request.args.get('search', '') }}" />
+      <button type="submit" aria-label="Search"><i class="fas fa-search"></i></button>
+    </form>
+    <br />
+    <div class="h1-prime">
+      <h1>
+        {% if request.args.get('search') %}
+        Search Results for "{{ request.args.get('search') }}"
+        {% else %}
+        Book Lists
+        {% endif %}
+      </h1>
+    </div>
+  </section>
+
+  <!-- Book Listings -->
+  <section id="product1" class="section-p1">
+    {% if books_by_category %}
+    {% for category, books in books_by_category.items() %}
+    <h2>{{ category }}</h2>
+    <div class="pro-container">
+      {% if books %}
+      {% for book in books %}
+      <div class="pro">
+        <a href="{{ url_for('book_detail', book_id=book[0]) }}">
+          {% if book[8] %}
+          <img src="{{ url_for('static', filename=book[8].replace('static/', '')) }}" alt="{{ book[2] }}" />
+          {% else %}
+          <img src="{{ url_for('static', filename='img/no-image.png') }}" alt="No Image Available" />
+          {% endif %}
+        </a>
+        <div class="des">
+          <span>{{ book[3] }}</span>
+          <h5>{{ book[2] }}</h5>
+          {% if book[4] %}
+          <h6>Edition: {{ book[4] }}</h6>
+          {% endif %}
+          {% if book[5] %}
+          <h6>Condition: {{ book[5] }}</h6>
+          {% endif %}
+          <h6>Original Price: Rs {{ book[6] }}</h6>
+          <h4>Selling Price: Rs {{ book[7] }}</h4>
+
+          {% if book[9] == 'Sold' %}
+          <p style="color: red; font-weight: bold;">Sold Out</p>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+      {% else %}
+      <p>No books available in this category.</p>
+      {% endif %}
+    </div>
+    {% endfor %}
+    {% else %}
+    <p>No books available for sale at the moment.</p>
+    {% endif %}
+  </section>
+
+  <!-- Footer -->
+  <footer class="section-p1">
+    <div class="col">
+      <img class="logo" src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" />
+      <h4>Contact</h4>
+      <p><strong>Address:</strong> Dhangadhi, Kailali</p>
+      <p><strong>Phone:</strong> +977 9848562356 / +977 9848757575</p>
+      <p><strong>Hours:</strong> 10:00 - 18:00, Mon - Sat</p>
+    </div>
+  </footer>
+
+  <div class="Copyrignt">
+    Copyright &copy; www.OldBookStore.com All rights reserved.
+  </div>
+</body>
+
+</html>

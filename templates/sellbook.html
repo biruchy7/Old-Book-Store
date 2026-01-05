@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sell Your Old Book</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/sellbook.css') }}" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <script>
+    function validateForm() {
+      const form = document.forms[0];
+
+      if (!form.book_image.value) {
+        alert("Please upload a book picture.");
+        return false;
+      }
+      if (!form.book_name.value.trim()) {
+        alert("Please enter the book name.");
+        return false;
+      }
+      if (!form.author.value.trim()) {
+        alert("Please enter the author name.");
+        return false;
+      }
+      if (!form.category.value.trim()) {
+        alert("Please enter a category.");
+        return false;
+      }
+      if (!form.condition.value) {
+        alert("Please select the book condition.");
+        return false;
+      }
+      if (!form.original_price.value || Number(form.original_price.value) <= 0) {
+        alert("Please enter a valid original price greater than zero.");
+        return false;
+      }
+      if (!form.selling_price.value || Number(form.selling_price.value) <= 0) {
+        alert("Please enter a valid selling price greater than zero.");
+        return false;
+      }
+      if (!form.description.value.trim()) {
+        alert("Please enter a description.");
+        return false;
+      }
+      return true;
+    }
+  </script>
+</head>
+
+<body>
+  <!-- Navigation section -->
+  <section id="header">
+    <div id="logo">
+      <a href="{{ url_for('home') }}">
+        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="OldBookStore.com" />
+      </a>
+    </div>
+    <div>
+      <ul id="navbar">
+        <li><a href="{{ url_for('home') }}">Home</a></li>
+        <li><a href="{{ url_for('buy') }}">Buy</a></li>
+        <li><a class="active" href="{{ url_for('sell') }}">Sell</a></li>
+        <li><a href="{{ url_for('orders') }}">Orders</a></li>
+        <li><a href="{{ url_for('wishlist') }}">Wishlist</a></li>
+        <li><a href="{{ url_for('messages') }}">Messages</a></li>
+        {% if session.get('user_id') %}
+          <li>Welcome, {{ session.get('username') }}</li>
+          <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        {% else %}
+          <li><a href="{{ url_for('login') }}">Login/Register</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </section>
+
+  <main class="form-wrapper">
+    <h2>List Your Book for Sale</h2>
+
+    {% with messages = get_flashed_messages(category_filter=['sell'], with_categories=true) %}
+      {% if messages %}
+        <ul class="flashes">
+          {% for category, message in messages %}
+            <li class="flash {{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('sell') }}" enctype="multipart/form-data" onsubmit="return validateForm()" novalidate>
+      <label for="book_image">Book Picture:</label>
+      <input type="file" id="book_image" name="book_image" accept="image/*" required />
+
+      <label for="book_name">Book Name:</label>
+      <input type="text" id="book_name" name="book_name" required />
+
+      <label for="author">Author:</label>
+      <input type="text" id="author" name="author" required />
+
+      <label for="edition">Edition:</label>
+      <input type="text" id="edition" name="edition" />
+
+      <label for="category">Category:</label>
+      <input list="category-list" id="category" name="category" placeholder="e.g. Novel, Technology" required />
+      <datalist id="category-list">
+        {% for id, name in categories %}
+          <option value="{{ name }}"></option>
+        {% endfor %}
+      </datalist>
+
+      <label for="condition">Condition:</label>
+      <select id="condition" name="condition" required>
+        <option value="">Select Condition</option>
+        <option value="Like New">Like New</option>
+        <option value="Good">Good</option>
+        <option value="Old">Old</option>
+      </select>
+
+      <label for="original_price">Original Price (Rs):</label>
+      <input type="number" id="original_price" name="original_price" min="1" required />
+
+      <label for="selling_price">Selling Price (Rs):</label>
+      <input type="number" id="selling_price" name="selling_price" min="1" required />
+
+      <label for="description">Description:</label>
+      <textarea id="description" name="description" rows="4" placeholder="Enter details about the book..." required></textarea>
+
+      <button type="submit">Submit</button>
+    </form>
+  </main>
+
+  <!-- Footer -->
+  <footer class="section-p1">
+    <div class="col">
+      <img class="logo" src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" />
+      <h4>Contact</h4>
+      <p><strong>Address:</strong> Dhangadhi, Kailali</p>
+      <p><strong>Phone:</strong> +977 9848562356 / +977 9848757575</p>
+      <p><strong>Hours:</strong> 10:00 - 18:00, Mon - Sat</p>
+    </div>
+  </footer>
+
+  <div class="Copyrignt" style="text-align:center; margin: 15px 0; font-size: 14px;">
+    Copyright &copy; www.OldBookStore.com All rights reserved.
+  </div>
+</body>
+
+</html>

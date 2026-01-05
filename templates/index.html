@@ -1,0 +1,169 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Old Book Store</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+</head>
+<body>
+
+<!-- Navigation -->
+<section id="header">
+  <div id="logo">
+    <a href="{{ url_for('home') }}">
+      <img src="{{ url_for('static', filename='img/logo.png') }}" alt="OldBookStore.com" />
+    </a>
+  </div>
+  <div>
+    <ul id="navbar">
+      <li><a class="active" href="{{ url_for('home') }}">Home</a></li>
+      <li><a href="{{ url_for('buy') }}">Buy</a></li>
+      <li><a href="{{ url_for('sell') }}">Sell</a></li>
+      <li><a href="{{ url_for('orders') }}">Orders</a></li>
+      <li><a href="{{ url_for('wishlist') }}">Wishlist</a></li>
+      <li><a href="#client-section">Our Team</a></li>
+      <li><a href="#contact">Contact</a></li>
+
+      {% if session.get('user_id') %}
+        {% if session.get('role') == 'admin' %}
+          <li><a href="{{ url_for('admin') }}">Admin</a></li>
+        {% endif %}
+        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+      {% else %}
+        <li><a href="{{ url_for('login') }}">Login/Register</a></li>
+      {% endif %}
+    </ul>
+  </div>
+</section>
+
+<!-- Hero Section -->
+<section id="hero">
+  <h4>Old Book Store</h4>
+  <h2>Buy and sell old books</h2>
+  <h1>Find your next</h1>
+  <p>Find your next favorite book or pass one on.</p>
+</section>
+
+<!-- Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div id="flashes">
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<!-- Features -->
+<section id="feature" class="section-p1">
+  <div class="fe-box">
+    <img src="{{ url_for('static', filename='img/features/lessenvironment.png') }}" alt="Less Pollution" />
+    <h6>Less Pollution</h6>
+  </div>
+  <div class="fe-box">
+    <img src="{{ url_for('static', filename='img/features/low-price.png') }}" alt="Affordable Price" />
+    <h6>Affordable Price</h6>
+  </div>
+  <div class="fe-box">
+    <img src="{{ url_for('static', filename='img/features/reusability of books.png') }}" alt="Reusability" />
+    <h6>Promotes reusability</h6>
+  </div>
+</section>
+
+<!-- Featured Books -->
+<section id="product1" class="section-p1">
+  <h2>Featured Books</h2>
+  <p>Collection of books at affordable prices!</p>
+  <div class="pro-container">
+    {% if books %}
+      {% for book in books %}
+        <div class="pro">
+          {% if book.image_path %}
+            <a href="{{ url_for('book_detail', book_id=book.bookID) }}">
+              <img src="{{ url_for('static', filename=book.image_path) }}" alt="{{ book.book_name }}">
+
+            </a>
+          {% else %}
+            <img src="{{ url_for('static', filename='img/no-image.png') }}" alt="No Image">
+          {% endif %}
+          <div class="des">
+            <span>{{ book.author }}</span>
+            <h5>{{ book.book_name }}</h5>
+            <h6>Condition: {{ book.condition }}</h6>
+            <h4>
+              <span style="text-decoration: line-through; color: gray;">Rs {{ book.price }}</span> 
+              Rs {{ book.selling_price }}
+            </h4>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>No featured books available at the moment.</p>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Our Team -->
+<section id="client-section">
+  <h1 class="h-primary center">Our Team</h1>
+  <div id="clients">
+    {% for member in team_members %}
+      <div class="client-item">
+        <img src="{{ url_for('static', filename=member.image) }}" alt="{{ member.name }}" />
+        <div class="name">
+          <h1>{{ member.name }}</h1>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- Contact Form -->
+<section id="contact">
+  <h1 class="h-primary center">Contact Us</h1>
+  <div id="contact-box">
+    <form action="{{ url_for('contact') }}" method="POST">
+      <div class="form-group">
+        <label for="name">Name: </label>
+        <input type="text" name="name" id="name" required />
+      </div>
+      <div class="form-group">
+        <label for="email">Email: </label>
+        <input type="email" name="email" id="email" required />
+      </div>
+      <div class="form-group">
+        <label for="phone">Phone Number: </label>
+        <input type="tel" name="phone" id="phone" />
+      </div>
+      <div class="form-group">
+        <label for="message">Message: </label>
+        <textarea name="message" id="message" rows="10" required></textarea>
+      </div>
+      <div class="btn">
+        <button type="submit">Submit</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="section-p1">
+  <div class="col">
+    <img class="logo" src="{{ url_for('static', filename='img/logo.png') }}" alt="OldBookStore Logo" />
+    <h4>Contact</h4>
+    <p><strong>Address:</strong> Dhangadhi, Kailali</p>
+    <p><strong>Phone:</strong> +977 9848562356 / +977 9848757575</p>
+    <p><strong>Hours:</strong> 10:00 - 18:00, Mon - Sat</p>
+  </div>
+</footer>
+
+<div class="Copyrignt">
+  Copyright &copy; www.OldBookStore.com All rights reserved.
+</div>
+
+</body>
+</html>

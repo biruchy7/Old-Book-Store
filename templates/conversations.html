@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Conversations-Old Book Store</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/message.css') }}" />
+  <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <style>
+    .btn {
+      display: inline-block;
+      padding: 10px 16px;
+      background-color: #d950065c;
+      color: rgba(217, 129, 4, 0.952);
+      text-decoration: none;
+      border: none;
+      border-radius: 4px;
+    }
+
+    .btn:hover {
+      background-color: #8e9eaf;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      font-weight: 700;
+      font-size: 1.8em;
+      text-align: left;
+    }
+
+    ul.conversation-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    ul.conversation-list li {
+      padding: 12px 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      background-color: #fff;
+      transition: background-color 0.3s ease;
+    }
+
+    ul.conversation-list li:hover {
+      background-color: #e3f2fd;
+    }
+
+    ul.conversation-list li a {
+      text-decoration: none;
+      color: #333;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      font-size: 1.1em;
+    }
+
+    .last-message {
+      font-weight: normal;
+      color: #666;
+      font-size: 0.9em;
+      margin-top: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    .last-message-meta {
+      font-size: 0.8em;
+      color: #888;
+      margin-top: 2px;
+    }
+
+    .unread-count {
+      background-color: #e53935;
+      color: white;
+      border-radius: 50%;
+      padding: 3px 8px;
+      font-size: 0.8em;
+      font-weight: bold;
+      min-width: 24px;
+      text-align: center;
+    }
+
+    nav.back-nav {
+      margin-bottom: 30px;
+      max-width: auto;
+      text-align: left;
+    }
+
+    nav.back-nav a {
+      text-decoration: none;
+      color: #0f0f10;
+      font-weight: 600;
+      font-size: 1em;
+      display: inline-block;
+    }
+
+    nav.back-nav a:hover {
+      color: #a80a0a;
+    }
+
+    
+
+  </style>
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <section id="header">
+    <div id="logo">
+      <a href="{{ url_for('home') }}">
+        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="OldBookStore.com" />
+      </a>
+    </div>
+    <div>
+      <ul id="navbar">
+        <li><a href="{{ url_for('home') }}">Home</a></li>
+        <li><a href="{{ url_for('buy') }}">Buy</a></li>
+        <li><a href="{{ url_for('sell') }}">Sell</a></li>
+        <li><a href="{{ url_for('orders') }}">Orders</a></li>
+        <li><a href="{{ url_for('wishlist') }}">Wishlist</a></li>
+
+        {% if session.get('user_id') %}
+        {% if session.get('role') == 'admin' %}
+        <li><a href="{{ url_for('admin') }}">Admin</a></li>
+        {% endif %}
+        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        {% else %}
+        <li><a href="{{ url_for('login') }}">Login/Register</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Flash Messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div id="flashes" style="max-width:700px; margin:20px auto;">
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
+
+  <!-- Main Content -->
+  <nav class="back-nav">
+    <a href="{{ url_for('home') }}" class="btn">Back to Home</a>
+  </nav>
+
+  <h2>Your Conversations</h2>
+
+  {% if conversations %}
+  <ul class="conversation-list" role="list" aria-label="User Conversations">
+    {% for convo in conversations %}
+    <li>
+      <a href="{{ url_for('message_user_book', receiver_id=convo.user_id, book_id=convo.book_id) }}">
+        <span>{{ convo.username }}</span>
+        {% if convo.unread_count > 0 %}
+        <span class="unread-count" aria-label="{{ convo.unread_count }} unread messages">
+          {{ convo.unread_count }}
+        </span>
+        {% endif %}
+      </a>
+      <div class="last-message" title="{{ convo.last_message }}">
+        {{ convo.last_message | e }}
+      </div>
+      <div class="last-message-meta">
+        {{ convo.last_message_time.strftime('%Y-%m-%d %H:%M') if convo.last_message_time else '' }}
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p style="max-width:700px; margin: 20px auto; text-align:center;">
+    You have no conversations yet.
+  </p>
+  {% endif %}
+
+  <!-- Footer -->
+  <footer class="section-p1">
+    <div class="col">
+      <img class="logo" src="{{ url_for('static', filename='img/logo.png') }}" alt="OldBookStore Logo"/>
+      <h4>Contact</h4>
+      <p><strong>Address:</strong> Dhangadhi, Kailali</p>
+      <p><strong>Phone:</strong> +977 9848562356 / +977 9848757575</p>
+      <p><strong>Hours:</strong> 10:00 - 18:00, Mon - Sat</p>
+    </div>
+  </footer>
+
+  <div class="Copyrignt">
+    Copyright &copy; www.OldBookStore.com All rights reserved.
+  </div>
+
+</body>
+
+</html>

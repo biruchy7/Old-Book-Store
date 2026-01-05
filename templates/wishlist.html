@@ -1,0 +1,126 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Your Wishlist - Old Book Store</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/cart.css') }}" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+</head>
+<body>
+  <!-- Navigation -->
+  <section id="header">
+    <div id="logo">
+      <a href="{{ url_for('home') }}">
+        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="OldBookStore.com" />
+      </a>
+    </div>
+    <div>
+      <ul id="navbar">
+        <li><a href="{{ url_for('home') }}">Home</a></li>
+        <li><a href="{{ url_for('buy') }}">Buy</a></li>
+        <li><a href="{{ url_for('sell') }}">Sell</a></li>
+        <li><a href="{{ url_for('orders') }}">Orders</a></li>
+        <li><a href="{{ url_for('wishlist') }}" class="active">Wishlist</a></li>
+        <li><a href="{{ url_for('messages') }}">Messages</a></li>
+        {% if session.get('user_id') %}
+          <li>Welcome, {{ session.get('username') }}</li>
+          <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        {% else %}
+          <li><a href="{{ url_for('login') }}">Login/Register</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Wishlist Section -->
+<main class="cart-wrapper">
+  <h2>Your Wishlist</h2>
+
+  <!-- Flash messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}" style="margin-bottom: 15px; padding: 10px; border-radius: 5px; background-color: #f0f0f0;">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  {% if wishlist_items %}
+    <table>
+      <thead>
+        <tr>
+          <th>Book</th>
+          <th>Price (Rs)</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in wishlist_items %}
+        <tr>
+          <td>
+            {% if item.image_path %}
+              <img
+                src="{{ url_for('static', filename=item.image_path.split('static/')[-1]) }}"
+                alt="{{ item.book_name }}"
+                width="60"
+              />
+            {% endif %}
+            {{ item.book_name }}
+          </td>
+          <td>{{ item.selling_price }}</td>
+          <td>
+            <a href="{{ url_for('checkout', book_id=item.bookID) }}" class="order-btn">Order Now</a>
+            <form
+              action="{{ url_for('remove_from_wishlist', wishlistid=item.wishlistid) }}"
+              method="POST"
+              style="display:inline;"
+              onsubmit="return confirm('Are you sure you want to remove this book?');"
+            >
+              <button type="submit" class="remove-btn">Remove</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>Your wishlist is empty.</p>
+  {% endif %}
+</main>
+
+
+  <!-- Footer -->
+  <footer class="section-p1">
+    <div class="col">
+      <img class="logo" src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" />
+      <h4>Contact</h4>
+      <p><strong>Address: </strong> Dhangadhi, Kailali</p>
+      <p><strong>Phone: </strong> +977 9848562356 / +977 9848757575</p>
+      <p><strong>Hours: </strong> 10:00 - 18:00, Mon - Sat</p>
+    </div>
+  </footer>
+
+  <div class="Copyrignt">
+    Copyright &copy; www.OldBookStore.com All rights reserved.
+  </div>
+
+  <style>
+    .order-btn {
+      background-color: #04aa6d;
+      color: white;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 14px;
+      margin-right: 5px;
+    }
+    .order-btn:hover {
+      background-color: #038e5c;
+    }
+  </style>
+</body>
+</html>
