@@ -1,0 +1,206 @@
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Cormorant Garamond', serif;
+}
+
+body {
+  width: 100%;
+  background-color: #f8f5f0;
+}
+
+/* Headings and Paragraphs */
+h1 {
+  font-size: 50px;
+  line-height: 64px;
+  color: #222;
+}
+
+h2 {
+  font-size: 40px;
+  line-height: 54px;
+  color: #3f3428;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+h4 {
+  font-size: 20px;
+  color: #222;
+}
+
+h6 {
+  font-weight: 700;
+  font-size: 12px;
+}
+
+p {
+  font-size: 16px;
+  color: #465b52;
+  margin: 15px 0 20px 0;
+}
+
+.section-p1 {
+  padding: 40px 80px;
+}
+
+/* Navigation Bar */
+#header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 80px;
+  background: linear-gradient(to right, #BFA98C, #704214);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  height: 85px;
+}
+
+#logo {
+  margin: 10px 34px;
+}
+
+#logo img {
+  height: 59px;
+  margin: 3px 6px;
+}
+
+#navbar {
+  display: flex;
+  align-items: center;
+}
+
+#navbar li {
+  list-style: none;
+  padding: 0 20px;
+  position: relative;
+}
+
+#navbar li a {
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  transition: 0.3s ease;
+}
+
+#navbar li a:hover,
+#navbar li a.active {
+  color: white;
+}
+
+#navbar li a.active::after,
+#navbar li a:hover::after {
+  content: "";
+  width: 30%;
+  height: 2px;
+  background: white;
+  position: absolute;
+  bottom: -4px;
+  left: 20px;
+}
+
+/* Sell Book Form */
+.form-wrapper {
+  max-width: 600px;
+  background: #fff;
+  margin: 40px auto;
+  padding: 30px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  border: 1px solid #d8cfc4;
+  border-radius: 10px;
+}
+
+form label {
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  color: #5a4637;
+  font-size: 17px;
+}
+
+form input,
+form textarea,
+form select {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-top: 5px;
+}
+
+form textarea {
+  resize: vertical;
+}
+
+form button {
+  background-color: #5a4637;
+  color: #fff;
+  padding: 12px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  margin-top: 25px;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+
+form button:hover {
+  background-color: #3c2d21;
+}
+
+/* Footer */
+footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  background: linear-gradient(to right, #BFA98C, #704214);
+  padding: 40px 80px;
+}
+
+footer .col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+footer .logo {
+  margin-bottom: 15px;
+  height: 120px;
+}
+
+footer h4 {
+  color: white;
+  font-size: 16px;
+  padding-bottom: 10px;
+}
+
+footer p {
+  color: white;
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+footer a {
+  font-size: 14px;
+  text-decoration: none;
+  color: #222;
+  margin: 5px 0;
+}
+
+.Copyrignt {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  background: black;
+  color: white;
+  font-size: 14px;
+}
