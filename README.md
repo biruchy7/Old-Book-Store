@@ -58,6 +58,7 @@ The project includes user authentication, book listings, wishlist, order process
 
 ## 🗂 Project Structure
 
-<img width="193" height="483" alt="image" src="https://github.com/user-attachments/assets/8bcea0a0-a75e-4b69-aa55-f7622652e429" />
+<img width="193" height="483" alt="image" src="https://github.com/user-attachments/assets/eb4d1f16-85f7-4998-8756-42796551face" />
+
 <img width="1443" height="653" alt="image" src="https://github.com/user-attachments/assets/b64b1657-43f2-4f90-b443-76f6f3bd5958" />
 
